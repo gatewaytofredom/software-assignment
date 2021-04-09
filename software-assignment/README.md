@@ -1,6 +1,6 @@
 ## Descripton
 
-This program when run will start a webserver to interact with the CSV records and optionally take a csv file path to populate the records initionally.
+This program when run will start a webserver to interact with the CSV records and optionally take a csv file path to populate the records initially.
 
 ## Options
 
