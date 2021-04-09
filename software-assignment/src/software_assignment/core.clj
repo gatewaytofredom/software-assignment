@@ -13,7 +13,6 @@
 
 (defn sort-last-name
   [record-map]
-  (println record-map)
   (sort-by first #(compare %2 %1) record-map))
 
 (defn reverse-date
