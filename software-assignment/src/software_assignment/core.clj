@@ -24,7 +24,6 @@
 (defn sort-birth-date
   [record-map]
   (let [sorted-vector (sort-by #(nth % 4) record-map)]
-    (println sorted-vector)
     (map #(vector (get % 0) (get % 1) (get % 2) (get % 3) (reverse-date %)) sorted-vector)))
 
 (defn sort-email
