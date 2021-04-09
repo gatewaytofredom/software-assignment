@@ -9,6 +9,8 @@
    [compojure.route :as route]
    [ring.util.codec]))
 
+(def records (atom []))
+
 (defn get-delimiter
   [csv-record]
   (if (or (clojure.string/includes? csv-record "|") (clojure.string/includes? csv-record "%7C"))
@@ -35,7 +37,13 @@
      :body (json/write-str "201 success")}))
 
 
+(defroutes app-routes ;(3)
+  (POST "/records" [] json-to-2d-vector)
+  (route/not-found "You Must Be New Here"))
+
 (defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (println "Hello, World!"))
+  ([]
+   (server/run-server #'app-routes {:port 8080}))
+  ([file sort-method ]
+   (swap! records conj (csv-to-2d-vector file))
+   (server/run-server #'app-routes {:port 8080})))
