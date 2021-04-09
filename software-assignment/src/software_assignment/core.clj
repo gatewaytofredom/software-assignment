@@ -11,8 +11,6 @@
 
 (def records (atom []))
 
-
-
 (defn sort-last-name
   [record-map]
   (println record-map)
@@ -23,7 +21,7 @@
   (let [record-vector (clojure.string/split (get nested-record 4) #"-")]
     (clojure.string/join "-" (vector (get record-vector 2) (get record-vector 1) (get record-vector 0)))))
 
-(defn sort-birth-date;; Fix Later
+(defn sort-birth-date
   [record-map]
   (let [sorted-vector (sort-by #(nth % 4) record-map)]
     (println sorted-vector)
@@ -35,6 +33,15 @@
                                            (if (and (clojure.string/includes? a "@") (clojure.string/includes? b "@"))
                                              (compare b a)
                                              (compare a b))) record-map))
+(defn get-delimiter
+  [csv-record]
+  (if (or (clojure.string/includes? csv-record "|") (clojure.string/includes? csv-record "%7C"))
+    "\\|"
+    (if (or (clojure.string/includes? csv-record ",") (clojure.string/includes? csv-record "%2C"))
+      ","
+      (if (or (clojure.string/includes? csv-record " ") (clojure.string/includes? csv-record "+"))
+        " "
+        (println "Unsported delimiter.")))))
 
 (defn sort-input
   [data sort-method]
@@ -46,15 +53,18 @@
         (sort-email data)
         "invalid sort method"))))
 
-(defn get-delimiter
-  [csv-record]
-  (if (or (clojure.string/includes? csv-record "|") (clojure.string/includes? csv-record "%7C"))
-    "\\|"
-    (if (or (clojure.string/includes? csv-record ",") (clojure.string/includes? csv-record "%2C"))
-      ","
-      (if (or (clojure.string/includes? csv-record " ") (clojure.string/includes? csv-record "+"))
-        " "
-        (println "Unsported delimiter.")))))
+(defn get-records-email [req]
+  {:status 200
+   :headers {"Content-Type" "application/json"}
+   :body (json/write-str (sort-input @records "email"))})
+(defn get-records-birthdate [req]
+  {:status 200
+   :headers {"Content-Type" "application/json"}
+   :body (json/write-str (sort-input @records "birth-date"))})
+(defn get-records-name [req]
+  {:status 200
+   :headers {"Content-Type" "application/json"}
+   :body (json/write-str (sort-input @records "last-name"))})
 
 (defn csv-to-2d-vector
   "Reads in a file from `file-path` and returns a 2d vector where each element represents one entry in a csv file."
@@ -71,30 +81,11 @@
      :headers {"Content-Type" "application/json"}
      :body (json/write-str "201 success")}))
 
-(defn get-records-name [req]
-  {:status 200
-   :headers {"Content-Type" "application/json"}
-   :body (json/write-str (sort-input @records "last-name"))})
-(defn get-records-birthdate [req]
-  {:status 200
-   :headers {"Content-Type" "application/json"}
-   :body (json/write-str (sort-input @records "birth-date"))})
-(defn get-records-email [req]
-  {:status 200
-   :headers {"Content-Type" "application/json"}
-   :body (json/write-str (sort-input @records "email"))})
-
-(defn sort-birth-date;; Fix Later
-  [record-map]
-  (let [sorted-vector (sort-by #(nth % 4) record-map)]
-    (println sorted-vector)
-    (map #(vector (get % 0) (get % 1) (get % 2) (get % 3) (reverse-date %)) sorted-vector)))
-
 (defroutes app-routes
   (POST "/records" [] json-to-2d-vector)
-  (GET "/records/name" [] get-records-name)
-  (GET "/records/birthdate" [] get-records-birthdate)
   (GET "/records/email" [] get-records-email)
+  (GET "/records/birthdate" [] get-records-birthdate)
+  (GET "/records/name" [] get-records-name)
   (route/not-found "You Must Be New Here"))
 
 (defn -main
