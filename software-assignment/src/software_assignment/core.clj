@@ -26,6 +26,14 @@
         delimiter (get-delimiter (slurp file-path))]
     (mapv #(clojure.string/split % (re-pattern delimiter)) csv-string)))
 
+(defn json-to-2d-vector
+  [post-request]
+  (let [json-string (get (json/read-str (slurp (post-request :body))) "data")]
+    (swap! records conj (clojure.string/split json-string (re-pattern (get-delimiter json-string))))
+    {:status 201
+     :headers {"Content-Type" "application/json"}
+     :body (json/write-str "201 success")}))
+
 
 (defn -main
   "I don't do a whole lot ... yet."
