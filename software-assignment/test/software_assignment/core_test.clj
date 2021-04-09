@@ -2,6 +2,7 @@
   (:require [clojure.test :refer :all]
             [software-assignment.core :refer :all]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(deftest get-delimiter-test
+  (testing "Function should return a string literal of the detected delimiter in a csv file.")
+  (is (= "\\|"
+         (get-delimiter "Robert|Owens|Robert@email.com|Red|1999-09-21"))))
