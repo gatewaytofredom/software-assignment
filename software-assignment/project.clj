@@ -9,7 +9,7 @@
                  [compojure "1.6.1"] 
                  [ring/ring-codec "1.1.3"] 
                  [org.clojure/data.json "2.0.2"]]
-  :main ^:skip-aot guaranteed-rate-record-parser-and-retrieval-system.core
+  :main ^:skip-aot software-assignment.core
   :target-path "target/%s"
   :plugins [[lein-cljfmt "0.6.1"]]
   :profiles {:uberjar {:aot :all
