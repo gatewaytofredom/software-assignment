@@ -29,6 +29,13 @@
     (println sorted-vector)
     (map #(vector (get % 0) (get % 1) (get % 2) (get % 3) (reverse-date %)) sorted-vector)))
 
+(defn sort-email
+  [record-map]
+  (sort-by (juxt #(nth % 2) #(nth % 0)) #(let [a %1 b %2]
+                                           (if (and (clojure.string/includes? a "@") (clojure.string/includes? b "@"))
+                                             (compare b a)
+                                             (compare a b))) record-map))
+
 (defn sort-input
   [data sort-method]
   (if (clojure.string/includes? sort-method "last-name")
