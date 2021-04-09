@@ -16,8 +16,3 @@
   (testing "Function should return a 2d vector where each element represents one entry in a csv file.")
   (is (= expected-2d-vector
          (csv-to-2d-vector "resources/test.csv"))))
-
-(deftest csv-to-2d-vector-test
-  (testing "Function should return a 2d vector where each element represents one entry in a csv file.")
-  (is (= expected-2d-vector
-         (csv-to-2d-vector "resources/test.csv"))))
