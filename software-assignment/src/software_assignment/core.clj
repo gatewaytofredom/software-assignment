@@ -19,6 +19,13 @@
         " "
         (println "Unsported delimiter.")))))
 
+(defn csv-to-2d-vector
+  "Reads in a file from `file-path` and returns a 2d vector where each element represents one entry in a csv file."
+  [file-path]
+  (let [csv-string  (clojure.string/split (slurp file-path) #"\r\n")
+        delimiter (get-delimiter (slurp file-path))]
+    (mapv #(clojure.string/split % (re-pattern delimiter)) csv-string)))
+
 
 (defn -main
   "I don't do a whole lot ... yet."
