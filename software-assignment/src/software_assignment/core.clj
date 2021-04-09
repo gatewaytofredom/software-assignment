@@ -51,11 +51,26 @@
   {:status 200
    :headers {"Content-Type" "application/json"}
    :body (json/write-str (sort-input @records "last-name"))})
+(defn get-records-birthdate [req]
+  {:status 200
+   :headers {"Content-Type" "application/json"}
+   :body (json/write-str (sort-input @records "birth-date"))})
 
+(defn reverse-date
+  [nested-record]
+  (let [record-vector (clojure.string/split (get nested-record 4) #"-")]
+    (clojure.string/join "-" (vector (get record-vector 2) (get record-vector 1) (get record-vector 0)))))
+
+(defn sort-birth-date;; Fix Later
+  [record-map]
+  (let [sorted-vector (sort-by #(nth % 4) record-map)]
+    (println sorted-vector)
+    (map #(vector (get % 0) (get % 1) (get % 2) (get % 3) (reverse-date %)) sorted-vector)))
 
 (defroutes app-routes
   (POST "/records" [] json-to-2d-vector)
   (GET "/records/name" [] get-records-name)
+  (GET "/records/birthdate" [] get-records-birthdate)
   (route/not-found "You Must Be New Here"))
 
 (defn -main
