@@ -11,16 +11,33 @@
 
 (def records (atom []))
 
+
+
 (defn sort-last-name
   [record-map]
   (println record-map)
   (sort-by first #(compare %2 %1) record-map))
 
+(defn reverse-date
+  [nested-record]
+  (let [record-vector (clojure.string/split (get nested-record 4) #"-")]
+    (clojure.string/join "-" (vector (get record-vector 2) (get record-vector 1) (get record-vector 0)))))
+
+(defn sort-birth-date;; Fix Later
+  [record-map]
+  (let [sorted-vector (sort-by #(nth % 4) record-map)]
+    (println sorted-vector)
+    (map #(vector (get % 0) (get % 1) (get % 2) (get % 3) (reverse-date %)) sorted-vector)))
+
 (defn sort-input
   [data sort-method]
   (if (clojure.string/includes? sort-method "last-name")
     (sort-last-name (first data))
-        "invalid sort method"))
+    (if (clojure.string/includes? sort-method "birth-date")
+      (sort-birth-date data)
+      (if (clojure.string/includes? sort-method "email")
+        (sort-email data)
+        "invalid sort method"))))
 
 (defn get-delimiter
   [csv-record]
@@ -55,11 +72,10 @@
   {:status 200
    :headers {"Content-Type" "application/json"}
    :body (json/write-str (sort-input @records "birth-date"))})
-
-(defn reverse-date
-  [nested-record]
-  (let [record-vector (clojure.string/split (get nested-record 4) #"-")]
-    (clojure.string/join "-" (vector (get record-vector 2) (get record-vector 1) (get record-vector 0)))))
+(defn get-records-email [req]
+  {:status 200
+   :headers {"Content-Type" "application/json"}
+   :body (json/write-str (sort-input @records "email"))})
 
 (defn sort-birth-date;; Fix Later
   [record-map]
@@ -71,6 +87,7 @@
   (POST "/records" [] json-to-2d-vector)
   (GET "/records/name" [] get-records-name)
   (GET "/records/birthdate" [] get-records-birthdate)
+  (GET "/records/email" [] get-records-email)
   (route/not-found "You Must Be New Here"))
 
 (defn -main
