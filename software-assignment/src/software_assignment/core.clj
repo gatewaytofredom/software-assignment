@@ -47,15 +47,21 @@
      :headers {"Content-Type" "application/json"}
      :body (json/write-str "201 success")}))
 
+(defn get-records-name [req]
+  {:status 200
+   :headers {"Content-Type" "application/json"}
+   :body (json/write-str (sort-input @records "last-name"))})
 
-(defroutes app-routes ;(3)
+
+(defroutes app-routes
   (POST "/records" [] json-to-2d-vector)
+  (GET "/records/name" [] get-records-name)
   (route/not-found "You Must Be New Here"))
 
 (defn -main
   ([]
    (server/run-server #'app-routes {:port 8080}))
-  ([file sort-method ]
+  ([file sort-method]
    (swap! records conj (csv-to-2d-vector file))
    (doseq [x (sort-input @records sort-method)] (println x))
    (server/run-server #'app-routes {:port 8080})))
