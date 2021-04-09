@@ -25,3 +25,8 @@
   (testing "Function should return vector containing vectors sorted last name decending.")
   (is (= [["Adams" "John" "Adams@email.com" "Red" "1735-10-30"] ["Washington" "George" "Washington@email.com" "Green" "1732-2-22"]])
       (sort-last-name test-sort-vector)))
+
+(deftest sort-birth-date-test
+  (testing "Function should return vector containing vectors sorted birth date ascending.")
+  (is (= [["Washington" "George" "Washington@email.com" "Green" "1732-2-22"] ["Adams" "John" "Adams@email.com" "Red" "1735-10-30"]])
+      (sort-birth-date test-sort-vector)))
