@@ -11,6 +11,17 @@
 
 (def records (atom []))
 
+(defn sort-last-name
+  [record-map]
+  (println record-map)
+  (sort-by first #(compare %2 %1) record-map))
+
+(defn sort-input
+  [data sort-method]
+  (if (clojure.string/includes? sort-method "last-name")
+    (sort-last-name (first data))
+        "invalid sort method"))
+
 (defn get-delimiter
   [csv-record]
   (if (or (clojure.string/includes? csv-record "|") (clojure.string/includes? csv-record "%7C"))
@@ -46,4 +57,5 @@
    (server/run-server #'app-routes {:port 8080}))
   ([file sort-method ]
    (swap! records conj (csv-to-2d-vector file))
+   (doseq [x (sort-input @records sort-method)] (println x))
    (server/run-server #'app-routes {:port 8080})))
